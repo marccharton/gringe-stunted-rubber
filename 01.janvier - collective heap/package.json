@@ -1,0 +1,9 @@
+{
+  "name": "collective-heap",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "p5": "^0.10.2"
+  }
+}
