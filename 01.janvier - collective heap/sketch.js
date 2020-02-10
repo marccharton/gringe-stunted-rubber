@@ -3,7 +3,8 @@ var ch = {
 	voiceList: [],
 	lastCircleCount: 0,
 	gap: 50,
-	sound: null
+	sound: null,
+	isAudioContextMessageVisible : true
 };
 
 function preload() {
@@ -11,25 +12,36 @@ function preload() {
 }
 
 function setup() {
-	createCanvas(windowWidth, windowHeight);
-	
-    strokeWeight(1);
+
+	const cnv = createCanvas(windowWidth, windowHeight);
+
+	// creation of audio context management
+	cnv.mouseClicked(function() {
+		userStartAudio().then(function() {
+		  ch.isAudioContextMessageVisible = false;
+  	});
+	});
+
+  strokeWeight(1);
 	noFill();
 
 	ch.mainColor = color(255, 204, 0);
 	ch.sound.setVolume(1);
-    ch.sound.playMode("restart");
+  ch.sound.playMode("restart");
 	ch.sound.play();
 }
 
-function mouseClicked() {
- if (getAudioContext().state !== 'running') {
-		getAudioContext().resume();
-	}
-}
-
 function draw() {
-    background(ch.mainColor);
+  background(ch.mainColor);
+	
+	if (ch.isAudioContextMessageVisible)
+	{
+		textAlign(CENTER);
+		fill(50);
+		textSize(50);
+		text('click to start audio', windowWidth/2, windowHeight/2);
+		noFill();
+	}
 
 	refreshVoiceList();
 	updateVoiceList();
