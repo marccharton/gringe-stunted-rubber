@@ -1,0 +1,15 @@
+{
+  "name": "absolute-communication",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "browser-sync",
+    "dev": "nodemon"
+  },
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "browser-sync": "^2.26.7",
+    "nodemon": "^2.0.2",
+    "p5": "^0.10.2"
+  }
+}
