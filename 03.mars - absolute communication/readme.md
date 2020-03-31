@@ -11,4 +11,4 @@ représenter la communication avec cette personne par le biais d'un texte qui le
 
 ## export
 
-![alt text](export/1.PNG "Export 1")
+![alt text](export/1.png "Export 1")
