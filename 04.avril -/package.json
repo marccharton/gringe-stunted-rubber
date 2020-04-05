@@ -1,0 +1,12 @@
+{
+  "name": "FIND_A_NAME",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "npx serve"
+  },
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "p5": "^0.10.2"
+  }
+}
