@@ -9,7 +9,12 @@ let param = {
     
     fontSizeStatic: false,
     blackAndWhite: false,
+
+    gridX: 10,
+    gridY: 2,
 };
+
+let variables = {};
 
 let data = {
     inputText: "pouet",
@@ -25,75 +30,72 @@ function setup() {
     textSize(10);
     textAlign(LEFT, CENTER);
     print(data.img.width + ' • ' + data.img.height);
+
+    background(255);
+    ellipseMode(CORNER);
+    rectMode(CENTER);
+
+    variables.x = 0;
+    variables.y = 0;
+    variables.textCounter = 0;
+
+    noStroke();
+    
+    //data.img.loadPixels();
 }
 
 function draw() {
-    background(255);
+    const color = getCurrentColor(variables.x, variables.y);
+       
+    // const effectiveSpace = drawPixelCircle(variables.x, variables.y, false);
+    // const effectiveSpace = drawPixelCircle(variables.x, variables.y);
+    const effectiveSpace = drawPixelRectangle(variables.x, variables.y, false);
+    variables.y += effectiveSpace;
 
-    var x = 0;
-    var y = param.spacing;
-    var textCounter = 0;
-    
-    while (y < height)
-    {
-        data.img.loadPixels();
-        getCurrentColor(x, y);
-
-        push();
-
-        translate(x, y);
-        drawPixel();
-        let letterWidth = printLetterAtCounter(textCounter);
-        x += letterWidth;
-
-        pop();
-        
-        textCounter++;
-        if (textCounter >= data.inputText.length) {
-            textCounter = 0;
-        }
-
-        if (x + letterWidth >= width) {
-            x = 0;
-            y += param.spacing;
-        }
-    }    
-    
-    print(param);
-    print(data);
-    noLoop();
+    if (variables.y >= height) {
+        variables.y = 0;
+        variables.x += param.gridX;
+    }
+    if (variables.x >= width) {
+        noLoop();
+        print(param);
+        print(data);
+    }
 }
 
 function getCurrentColor(x, y) {
-    data.imgX = round(map(x, 0, width, 0, data.img.width));
-    data.imgY = round(map(y, 0, height, 0, data.img.height));
+    data.imgX = x;
+    data.imgY = y;
     data.c = color(data.img.get(data.imgX, data.imgY));
     data.greyscale = round(red(data.c) * 0.222 + green(data.c) * 0.707 + blue(data.c) * 0.071);
+    return data.c;
 }
 
-function drawPixel() {
-    // if (param.fontSizeStatic) {
-    //     textSize(param.fontSizeMax);
-    //     if (param.blackAndWhite) {
-    //       fill(data.greyscale);
-    //     } else {
-    //       fill(data.c);
-    //     }
-    //   } else {
-    //     // greyscale to fontsize
-    var fontSize = map(data.greyscale, 0, 255, param.fontSizeMax, param.fontSizeMin);
-    fontSize = max(fontSize, 1);
-    textSize(fontSize);
-    if (param.blackAndWhite) {
-        fill(data.greyscale);
-    } else {
-        fill(data.c);
+function drawPixelCircle(x, y, colored=true) {
+    const circleSize = round(map(data.greyscale, 0, 255, 2, param.gridX));
+    if (colored) {
+        fill(data.c)
     }
-    //   }
+    circle(x, y, circleSize);
+    return circleSize;
 }
 
-function printLetterAtCounter(textCounter) {
-    var letter = data.inputText.charAt(textCounter);
-    text(letter, 0, 0);
-    return textWidth(letter) + param.kerning;
+function drawPixelRectangle(x, y, colored=true) {
+    const width = round(map(data.greyscale, 0, 255, param.gridX, 1));
+    if (colored) {
+        fill(data.c)
+    } else {
+        fill(0);
+    }
+    rect(x, y, width, param.gridY);
+    return param.gridY;
+}
+
+function printElapsedTime(callback) {
+    let before = millis();
+    callback();
+    let after = millis();
+    print("before : " + before + ", ", 
+          "after : " + after + ", ", 
+          "after - before : " + (after - before));
 }
