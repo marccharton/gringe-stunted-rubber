@@ -1,13 +1,16 @@
-# Real link
+# Early Expression
 
 ## context
 
-besoin de faire un projet en une soirée pour faire celui du mois de mars.  
-envie d'exprimer un manque de communication en image.  
+envie de renouer avec le passé.  
+refaire un projet vieux artistique oublié.  
+premier projet sur lequel je me suis vraiment impliqué en art plastique.  
+
 
 ## objectives
 
-représenter la communication avec cette personne par le biais d'un texte qui le met en image.  
+reproduire un projet avec mes outils actuels.  
+dessiner une image à base de lignes verticales plus ou épaisses.  
 
 ## export
 

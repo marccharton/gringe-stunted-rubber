@@ -1,5 +1,5 @@
 {
-  "name": "FIND_A_NAME",
+  "name": "early-expression",
   "version": "1.0.0",
   "scripts": {
     "start": "npx serve"
