@@ -31,7 +31,7 @@ var fontSizeMin = 5;
 var spacing = 9; // line height
 var kerning = 0.2; // between letters
 
-var divider = 2; // improve performance
+var divider = 1; // improve performance
 
 var fontSizeStatic = false;
 var blackAndWhite = false;
@@ -39,7 +39,7 @@ var blackAndWhite = false;
 var img;
 
 function preload() {
-  img = loadImage('data/image 669x861.jpg');
+  img = loadImage('data/image 67x87.jpg');
 }
 
 function setup() {

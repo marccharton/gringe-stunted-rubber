@@ -2,8 +2,7 @@
   "name": "absolute-communication",
   "version": "1.0.0",
   "scripts": {
-    "start": "browser-sync",
-    "dev": "nodemon"
+    "start": "npx serve"
   },
   "main": "index.js",
   "license": "MIT",
