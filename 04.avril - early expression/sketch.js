@@ -5,7 +5,7 @@ let param = {
     spacing: 9, // line height
     kerning: 0.2, // between letters
     
-    divider: 1, // improve performance
+    multiplier: 1, // improve performance
     
     fontSizeStatic: false,
     blackAndWhite: false,
@@ -21,11 +21,11 @@ let data = {
 };
 
 function preload() {
-    data.img = loadImage('data/pop1.jpg');
+    data.img = loadImage('img/sources/pop750x563.jpg');
   }
 
 function setup() {
-    createCanvas(data.img.width/param.divider,data.img.height/param.divider);
+    createCanvas(data.img.width*param.multiplier,data.img.height*param.multiplier);
     textFont('Times');
     textSize(10);
     textAlign(LEFT, CENTER);
