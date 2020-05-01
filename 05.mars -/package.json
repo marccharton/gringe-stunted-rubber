@@ -1,0 +1,15 @@
+{
+  "name": "p5project",
+  "version": "1.0.0-alpha.1",
+  "main": "sketch.js",
+  "scripts": {
+    "start": "lr-http-server -p 4000 -w */*.js,*.css,*.html"
+  },
+  "devDependencies": {
+    "@types/p5": "^0.9.0",
+    "lr-http-server": "^0.1.5"
+  },
+  "dependencies": {
+    "p5": "^1.0.0"
+  }
+}

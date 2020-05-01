@@ -1,0 +1,12 @@
+{
+  "name": "trouver-un-nom",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "npx serve"
+  },
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "p5": "^1.0.0"
+  }
+}
