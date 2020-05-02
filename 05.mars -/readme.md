@@ -2,10 +2,8 @@
 
 ## context
 
-## objectives
+améliorer la génération d'image à base de symboles.  
 
 ## export
 
-### Original
-
-### Renders
+![owl glitch](https://media.giphy.com/media/dWqrqCDDBREgUfd3k6/giphy.gif)
