@@ -1,14 +1,18 @@
 /// <reference path="../node_modules/@types/p5/global.d.ts" />
 
 const Mode = {
-    blackAndWhite: 0,
-    color: 1,
-    random: 2,
+    color: 0,
+    blackAndWhite: 1,
+    whiteAndBlack: 2,
+    greyscale: 3,
+    random: 4,
+    contrastedRandom: 5,
 };
 
 const PixelShape = {
     circle: 0,
     rectangle: 1,
+    losange: 2,
 };
 
 const param = {
@@ -18,14 +22,14 @@ const param = {
     spacing: 9, // line height
     kerning: 0.2, // between letters
     
-    multiplier: 10, // improve performance
+    multiplier: 8, // improve performance
     
     fontSizeStatic: false,
     blackAndWhite: false,
 
-    gridX: 10,
+    gridX: 15,
     gridY: 20,
 
-    mode: Mode.color,
+    mode: Mode.blackAndWhite,
     pixelShape: PixelShape.rectangle,
 };

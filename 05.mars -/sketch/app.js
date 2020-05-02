@@ -11,8 +11,13 @@ let app = {
     setup() {
         createCanvas(data.img.width*param.multiplier,data.img.height*param.multiplier).parent("container");
         print(data.img.width + ' • ' + data.img.height);
-        background(255);
-        ellipseMode(CORNER);
+        
+        if (param.mode === Mode.whiteAndBlack) {
+            background(0);
+        } else {
+            background(255);
+        }
+        ellipseMode(CENTER);
         rectMode(CENTER);
 
         variables.x = 0;
@@ -38,7 +43,7 @@ let app = {
             variables.x = 0
             variables.y = 0
         }
-        param.gridX = map(mouseX, 0, width, 20, 50);
+       // param.gridX = map(mouseX, 0, width, 20, 50);
     }
 };
 
@@ -58,8 +63,22 @@ function chooseColorMode() {
         case Mode.blackAndWhite:
             fill(0);
             break;
+        case Mode.whiteAndBlack:
+            fill(255);
+            break;
+        case Mode.greyscale:
+            fill(data.greyscale);
+            break;
         case Mode.random:
             fill(random(0,255),random(0,255),random(0,255));
+            break;
+        case Mode.contrastedRandom:
+            let [r, g, b] = [
+                255 - random(0, 255 - data.greyscale * 0.1),
+                255 - random(0, 255 - data.greyscale * 0.8),
+                255 - random(0, 255 - data.greyscale * 1)
+            ];
+            fill(r, g, b);
             break;
     }
 }
@@ -73,11 +92,14 @@ function drawPixel(x, y) {
         case PixelShape.rectangle:
             return drawPixelRectangle(x, y);
             break;
+        case PixelShape.losange:
+            return drawPixelLosange(x, y);
+            break;
     }
 }
 
 function drawPixelCircle(x, y) {
-    const circleSize = map(data.greyscale, 0, 255, param.gridX, 0);
+    const circleSize = map(data.greyscale, 0, 255, param.gridX, 5);
     circle(x, y, circleSize);
     return {
         width: circleSize,
@@ -92,6 +114,14 @@ function drawPixelRectangle(x, y) {
         width,
         height: param.gridY
      };
+}
+
+function drawPixelLosange(x, y) {
+    push();
+    rotate(PI/3);
+    const space = drawPixelRectangle(x, y);
+    pop();
+    return space;
 }
 
 function printElapsedTime(callback) {
