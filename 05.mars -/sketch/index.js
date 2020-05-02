@@ -3,3 +3,5 @@
 window.setup = () => app.setup();
 window.draw = () => app.draw();
 window.preload = () => app.preload();
+window.keyReleased = () => app.keyReleased();
+

@@ -5,7 +5,7 @@ let data = {};
 
 let app = {
     preload() {
-        data.img = loadImage('../assets/img/sources/pop75x57.jpg');
+        data.img = loadImage(`${param.imagePath}/${param.imageName}`);
     },
 
     setup() {
@@ -44,6 +44,12 @@ let app = {
             variables.y = 0
         }
        // param.gridX = map(mouseX, 0, width, 20, 50);
+    },
+
+    keyReleased() {
+        if (key == 's' || key == 'S') {
+            saveCanvas(gd.timestamp(), 'png');
+        }
     }
 };
 

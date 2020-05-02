@@ -16,6 +16,9 @@ const PixelShape = {
 };
 
 const param = {
+    imagePath: "../assets/img/sources/",
+    imageName: "pop75x57.jpg",
+
     fontSizeMax: 15,
     fontSizeMin: 5,
 
