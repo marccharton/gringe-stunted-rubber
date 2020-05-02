@@ -16,26 +16,24 @@ const PixelShape = {
 
 const param = {
     imagePath: "../assets/img/sources/",
-    imageName: "pop75x57.jpg",
+    imageName: "owl",
+    imageExtension: "jpg",
 
-    fontSizeMax: 15,
-    fontSizeMin: 5,
-
-    spacing: 9, // line height
-    kerning: 0.2, // between letters
+    multiplier: 1,
     
-    multiplier: 8, // improve performance
-    
-    fontSizeStatic: false,
-    blackAndWhite: false,
+    gridX: 3,
+    gridY: 2,
 
-    gridX: 15,
-    gridY: 20,
+    darkBackground: true, 
 
     pixelConfig: [
         {
-            mode: Mode.blackAndWhite,
+            mode: Mode.color,
             pixelShape: PixelShape.rectangle,
+        },
+        {
+            mode: Mode.contrastedRandom,
+            pixelShape: PixelShape.circle,
         },
     ],
     

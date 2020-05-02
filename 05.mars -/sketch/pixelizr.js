@@ -33,8 +33,8 @@ const pixelizr = {
                 break;
             case Mode.contrastedRandom:
                 let [r, g, b] = [
-                    255 - random(0, 255 - data.greyscale * 0.1),
-                    255 - random(0, 255 - data.greyscale * 0.8),
+                    255 - random(0, 255 - data.greyscale * 1),
+                    255 - random(0, 255 - data.greyscale * 1),
                     255 - random(0, 255 - data.greyscale * 1)
                 ];
                 fill(r, g, b);
@@ -57,7 +57,7 @@ const pixelizr = {
         let maxSpace = {width: 0, height: 0};
         let pixelConfigList = [...param.pixelConfig];
         while (pixelConfigList.length >= 1) {
-            const pixelConfig = pixelConfigList.pop();
+            const pixelConfig = pixelConfigList.shift();
             this.fillWithColor(pixelConfig);
             let space = this.drawSymbol(x, y, pixelConfig);
             maxSpace = {

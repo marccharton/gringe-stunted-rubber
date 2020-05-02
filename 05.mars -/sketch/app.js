@@ -4,14 +4,16 @@ let data = {};
 
 let app = {
     preload() {
-        data.img = loadImage(`${param.imagePath}/${param.imageName}`);
+        data.img = loadImage(`${param.imagePath}/${param.imageName}.${param.imageExtension}`);
     },
 
     setup() {
+        const key = `${param.projectName}RendersCount`;
+
         createCanvas(data.img.width*param.multiplier,data.img.height*param.multiplier).parent("container");
         print(data.img.width + ' • ' + data.img.height);
         
-        if (param.mode === Mode.whiteAndBlack) {
+        if (param.darkBackground) {
             background(0);
         } else {
             background(255);
@@ -46,7 +48,18 @@ let app = {
 
     keyReleased() {
         if (key == 's' || key == 'S') {
-            saveCanvas(gd.timestamp(), 'png');
+            const key = `${param.imageName}RendersCount`;
+            const previousCount = localStorage.getItem(key);
+            let currentCount = previousCount === null ? 0 : int(previousCount) + 1;
+            const fileName = `${param.imageName}_${currentCount}`;
+            
+            localStorage.setItem(key, currentCount);
+            saveCanvas(fileName, 'png');
+        }
+        
+        if (key == 'r' || key == 'R') {
+            const key = `${param.imageName}RendersCount`;
+            localStorage.removeItem(key);
         }
     }
 };
