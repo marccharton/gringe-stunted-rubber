@@ -1,4 +1,3 @@
-/// <reference path="../node_modules/@types/p5/global.d.ts" />
 
 const Mode = {
     color: 0,
@@ -33,6 +32,11 @@ const param = {
     gridX: 15,
     gridY: 20,
 
-    mode: Mode.blackAndWhite,
-    pixelShape: PixelShape.rectangle,
+    pixelConfig: [
+        {
+            mode: Mode.blackAndWhite,
+            pixelShape: PixelShape.rectangle,
+        },
+    ],
+    
 };
