@@ -16,7 +16,7 @@ dessiner une image à base de lignes verticales plus ou épaisses.
 
 ### Original
 
-![Original Image](data/pop1.jpg "Original Image")
+![Original Image](img/sources/pop750x563.jpg "Original Image")
 
 
 ### Renders
