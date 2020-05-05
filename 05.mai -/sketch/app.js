@@ -1,6 +1,12 @@
 
-let variables = {};
-let data = {};
+let variables = {
+    x: 0,
+    y: 0,
+};
+let data = {
+    img: {},
+};
+let startedTime = null;
 
 let app = {
     preload() {
@@ -8,24 +14,17 @@ let app = {
     },
 
     setup() {
-        const key = `${param.projectName}RendersCount`;
-
-        createCanvas(data.img.width*param.multiplier,data.img.height*param.multiplier).parent("container");
+        createCanvas(data.img.width * param.multiplier,
+                     data.img.height * param.multiplier)
+            .parent("container");
         print(data.img.width + ' • ' + data.img.height);
         
-        if (param.darkBackground) {
-            background(0);
-        } else {
-            background(255);
-        }
-        ellipseMode(CENTER);
-        rectMode(CENTER);
-
-        variables.x = 0;
-        variables.y = 0;
-
-        noStroke();    
-        data.img.loadPixels();
+        pixelizr.init({
+            ...param, 
+            imgSource : data.img    
+        });
+        pixelizr.setup();
+        startedTime = millis();
     },
 
     draw() {
@@ -42,6 +41,8 @@ let app = {
             print(data);
             variables.x = 0
             variables.y = 0
+            
+            printTime(startedTime, millis());
         }
        // param.gridX = map(mouseX, 0, width, 20, 50);
     },
@@ -68,6 +69,10 @@ function printElapsedTime(callback) {
     let before = millis();
     callback();
     let after = millis();
+    printTime(before, after);
+}
+
+function printTime(before, after) {
     print("before : " + before + ", ", 
           "after : " + after + ", ", 
           "after - before : " + (after - before));

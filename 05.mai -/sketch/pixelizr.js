@@ -1,45 +1,68 @@
 
 const pixelizr = {
-    draw() {
-        this.getCurrentColor(variables.x, variables.y);
-        return this.drawPixel(variables.x, variables.y);
+
+    options: {},
+    currentPixel : {},
+    imgSource : {},
+    pixelConfig: [],
+    gridX: {},
+    gridY: {},
+
+    init(options) {
+      this.options = options;
+      if (options.imgSource === undefined) {
+          throw "imgSource must be declared";
+      }
+      this.imgSource = options.imgSource;
+
+      this.gridX = options.gridX || 10;
+      this.gridY = options.gridY || 10;
+    },
+
+    setup() {
+        ellipseMode(CENTER);
+        rectMode(CENTER);
+        noStroke();
+
+        if (this.options.darkBackground) {
+            background(0);
+        } else {
+            background(255);
+        }
+    },
+
+    draw(x, y) {
+        this.getCurrentColor(x, y);
+        return this.drawPixel(x, y);
     },
 
     
     getCurrentColor(x, y) {
-        data.imgX = map(x, 0, width, 0, data.img.width);
-        data.imgY = map(y, 0, height, 0, data.img.height);
-        data.c = color(data.img.get(data.imgX, data.imgY));
-        data.greyscale = round(red(data.c) * 0.222 + green(data.c) * 0.707 + blue(data.c) * 0.071);
-        return data.c;
+        let imgX = map(x, 0, width, 0, this.imgSource.width);
+        let imgY = map(y, 0, height, 0, this.imgSource.height);
+        this.currentPixel.color = color(this.imgSource.get(imgX, imgY));
+        this.currentPixel.greyscale = round(red(this.currentPixel.color) * 0.222 + green(this.currentPixel.color) * 0.707 + blue(this.currentPixel.color) * 0.071);
+        return this.currentPixel.color;
     },
 
     fillWithColor(pixelConfig) {
-        switch(pixelConfig.mode) {
-            case Mode.color:
-                fill(data.c);
-                break;
-            case Mode.blackAndWhite:
-                fill(0);
-                break;
-            case Mode.whiteAndBlack:
-                fill(255);
-                break;
-            case Mode.greyscale:
-                fill(data.greyscale);
-                break;
-            case Mode.random:
-                fill(random(0,255),random(0,255),random(0,255));
-                break;
-            case Mode.contrastedRandom:
-                let [r, g, b] = [
-                    255 - random(0, 255 - data.greyscale * 1),
-                    255 - random(0, 255 - data.greyscale * 1),
-                    255 - random(0, 255 - data.greyscale * 1)
-                ];
-                fill(r, g, b);
-                break;
-        }
+        const modes = {};
+
+        modes[Mode.color] = () =>  fill(this.currentPixel.color);
+        modes[Mode.blackAndWhite] = () => fill(0);
+        modes[Mode.whiteAndBlack] = () => fill(255);
+        modes[Mode.greyscale] = () => fill(this.currentPixel.greyscale);
+        modes[Mode.random] = () => fill(random(0,255),random(0,255),random(0,255));
+        modes[Mode.contrastedRandom] = () => {
+            let [r, g, b] = [
+                255 - random(0, 255 - this.currentPixel.greyscale * 1),
+                255 - random(0, 255 - this.currentPixel.greyscale * 1),
+                255 - random(0, 255 - this.currentPixel.greyscale * 1)
+            ];
+            fill(r, g, b);
+        };
+      
+        return modes[pixelConfig.mode]();
     },
 
     drawSymbol(x, y, pixelConfig) {
@@ -57,33 +80,24 @@ const pixelizr = {
         let maxSpace = {width: 0, height: 0};
         let pixelConfigList = [...param.pixelConfig];
         while (pixelConfigList.length >= 1) {
-            const pixelConfig = pixelConfigList.shift();
+            let pixelConfig = pixelConfigList.shift();
             this.fillWithColor(pixelConfig);
             let space = this.drawSymbol(x, y, pixelConfig);
-            maxSpace = {
-                width: max(maxSpace.width, space.width),
-                height: max(maxSpace.height, space.height),
-            }
+            maxSpace = this.createGrid(max(maxSpace.width, space.width), max(maxSpace.height, space.height));
         }
         return maxSpace;
     },
 
     drawPixelCircle(x, y) {
-        const circleSize = map(data.greyscale, 0, 255, param.gridX, 5);
+        const circleSize = map(this.currentPixel.greyscale, 0, 255, this.gridX, 5);
         circle(x, y, circleSize);
-        return {
-            width: circleSize,
-            height: circleSize
-        };
+        return this.createGrid(circleSize, circleSize);
     },
 
     drawPixelRectangle(x, y) {
-        const width = map(data.greyscale, 0, 255, param.gridX, 0);
-        rect(x, y, width, param.gridY);
-        return {
-            width,
-            height: param.gridY
-        };
+        const width = map(this.currentPixel.greyscale, 0, 255, this.gridX, 0);
+        rect(x, y, width, this.gridY);
+        return this.createGrid(width, this.gridY);
     },
 
     drawPixelLosange(x, y) {
@@ -93,5 +107,9 @@ const pixelizr = {
         pop();
         return space;
     },
+
+    createGrid(width, height) {
+        return { width, height };
+    }
 
 };
