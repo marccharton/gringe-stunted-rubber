@@ -1,10 +1,23 @@
+const Mode = {
+    color: 0,
+    blackAndWhite: 1,
+    whiteAndBlack: 2,
+    greyscale: 3,
+    random: 4,
+    contrastedRandom: 5,
+};
+
+const PixelShape = {
+    circle: 0,
+    rectangle: 1,
+    losange: 2,
+};
 
 const pixelizr = {
-
     options: {},
     currentPixel : {},
     imgSource : {},
-    pixelConfig: [],
+    pixelConfigList: [],
     gridX: {},
     gridY: {},
 
@@ -17,6 +30,8 @@ const pixelizr = {
 
       this.gridX = options.gridX || 10;
       this.gridY = options.gridY || 10;
+
+      this.pixelConfigList = options.pixelConfig;
     },
 
     setup() {
@@ -78,7 +93,7 @@ const pixelizr = {
 
     drawPixel(x, y) {
         let maxSpace = {width: 0, height: 0};
-        let pixelConfigList = [...param.pixelConfig];
+        let pixelConfigList = [...this.pixelConfigList];
         while (pixelConfigList.length >= 1) {
             let pixelConfig = pixelConfigList.shift();
             this.fillWithColor(pixelConfig);

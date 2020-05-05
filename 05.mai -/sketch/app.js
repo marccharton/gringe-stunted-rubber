@@ -6,6 +6,11 @@ let variables = {
 let data = {
     img: {},
 };
+let param = {
+    imagePath: "../assets/img/sources/",
+    imageName: "owl",
+    imageExtension: "jpg",
+};
 let startedTime = null;
 
 let app = {
@@ -14,13 +19,13 @@ let app = {
     },
 
     setup() {
-        createCanvas(data.img.width * param.multiplier,
-                     data.img.height * param.multiplier)
+        createCanvas(data.img.width * options.multiplier,
+                     data.img.height * options.multiplier)
             .parent("container");
-        print(data.img.width + ' • ' + data.img.height);
+        // print(data.img.width + ' • ' + data.img.height);
         
         pixelizr.init({
-            ...param, 
+            ...options,
             imgSource : data.img    
         });
         pixelizr.setup();
@@ -33,18 +38,16 @@ let app = {
     
         if (variables.y >= height) {
             variables.y = 0;
-            variables.x += param.gridX;
+            variables.x += options.gridX;
         }
         if (variables.x >= width) {
             noLoop();
-            print(param);
-            print(data);
             variables.x = 0
             variables.y = 0
             
             printTime(startedTime, millis());
         }
-       // param.gridX = map(mouseX, 0, width, 20, 50);
+       // options.gridX = map(mouseX, 0, width, 20, 50);
     },
 
     keyReleased() {
