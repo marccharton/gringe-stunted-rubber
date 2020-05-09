@@ -8,7 +8,7 @@ let data = {
 };
 let param = {
     imagePath: "../assets/img/sources/",
-    imageName: "owl",
+    imageName: "yassin",
     imageExtension: "jpg",
 };
 let startedTime = null;
@@ -33,40 +33,55 @@ let app = {
     },
 
     draw() {
-        const effectiveSpace = pixelizr.draw(variables.x, variables.y);
-        variables.y += effectiveSpace.height;
-    
-        if (variables.y >= height) {
-            variables.y = 0;
-            variables.x += options.gridX;
-        }
-        if (variables.x >= width) {
+        if (variables.x >= width + options.gridX) {
             noLoop();
             variables.x = 0
             variables.y = 0
             
             printTime(startedTime, millis());
         }
+        if (variables.y >= height  + options.gridY) {
+            variables.y = 0;
+            variables.x += options.gridX;
+        }
+
+        
+        const effectiveSpace = pixelizr.draw(variables.x, variables.y);
+        variables.y += effectiveSpace.height;
+        
+        
        // options.gridX = map(mouseX, 0, width, 20, 50);
     },
 
     keyReleased() {
-        if (key == 's' || key == 'S') {
-            const key = `${param.imageName}RendersCount`;
-            const previousCount = localStorage.getItem(key);
-            let currentCount = previousCount === null ? 0 : int(previousCount) + 1;
+
+        mapKeyToFunc("s", () => {
+            const currentCount = saveSnapShotLocally(param.imageName);
             const fileName = `${param.imageName}_${currentCount}`;
-            
-            localStorage.setItem(key, currentCount);
             saveCanvas(fileName, 'png');
-        }
+        });
         
-        if (key == 'r' || key == 'R') {
+        mapKeyToFunc("r", () => {
             const key = `${param.imageName}RendersCount`;
             localStorage.removeItem(key);
-        }
+        });
     }
 };
+
+function saveSnapShotLocally(imageName) {
+    const key = `${imageName}RendersCount`;
+    const previousCount = localStorage.getItem(key);
+    let currentCount = previousCount === null ? 0 : int(previousCount) + 1;
+    
+    localStorage.setItem(key, currentCount);
+    return currentCount;
+}
+
+function mapKeyToFunc(keyCode, func) {
+    if (key === keyCode || key === keyCode.toLowerCase() ||  key === keyCode.toUpperCase()) {
+        func();
+    }
+}
 
 function printElapsedTime(callback) {
     let before = millis();
