@@ -1,8 +1,3 @@
-
-let variables = {
-    x: 0,
-    y: 0,
-};
 let data = {
     img: {},
 };
@@ -29,26 +24,13 @@ let app = {
             imgSource : data.img    
         });
         pixelizr.setup();
+        imageParser.init(ParsingMode.horizontal);
         startedTime = millis();
     },
 
     draw() {
-        if (variables.x >= width + options.gridX) {
-            noLoop();
-            variables.x = 0
-            variables.y = 0
-            
-            printTime(startedTime, millis());
-        }
-        if (variables.y >= height  + options.gridY) {
-            variables.y = 0;
-            variables.x += options.gridX;
-        }
-
         
-        const effectiveSpace = pixelizr.draw(variables.x, variables.y);
-        variables.y += effectiveSpace.height;
-        
+        imageParser.run((x, y) => pixelizr.draw(x, y));
         
        // options.gridX = map(mouseX, 0, width, 20, 50);
     },
@@ -56,7 +38,7 @@ let app = {
     keyReleased() {
 
         mapKeyToFunc("s", () => {
-            const currentCount = saveSnapShotLocally(param.imageName);
+            const currentCount = incerementCounterLocally(param.imageName);
             const fileName = `${param.imageName}_${currentCount}`;
             saveCanvas(fileName, 'png');
         });
@@ -68,7 +50,7 @@ let app = {
     }
 };
 
-function saveSnapShotLocally(imageName) {
+function incerementCounterLocally(imageName) {
     const key = `${imageName}RendersCount`;
     const previousCount = localStorage.getItem(key);
     let currentCount = previousCount === null ? 0 : int(previousCount) + 1;
@@ -93,5 +75,5 @@ function printElapsedTime(callback) {
 function printTime(before, after) {
     print("before : " + before + ", ", 
           "after : " + after + ", ", 
-          "after - before : " + (after - before));
+          "after - before : " + (after - before) / 1000 + " s" );
 }
