@@ -2,8 +2,8 @@ const options = {
 
     multiplier: 5,
     
-    gridX: 20,
-    gridY: 50,
+    gridX: 30,
+    gridY: 100,
 
     darkBackground: false, 
 
@@ -12,10 +12,10 @@ const options = {
             mode: Mode.color,
             pixelShape: PixelShape.rectangle,
         },
-        {
-            mode: Mode.whiteAndBlack,
-            pixelShape: PixelShape.circle,
-        },
+        // {
+        //     mode: Mode.whiteAndBlack,
+        //     pixelShape: PixelShape.circle,
+        // },
     ],
     
 };
