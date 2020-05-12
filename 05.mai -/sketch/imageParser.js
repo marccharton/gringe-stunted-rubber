@@ -6,24 +6,29 @@ const ParsingMode = {
 
 const imageParser = {
     
+    log() {
+        console.log({firstDimension: this.firstDimension});
+        console.log({firstConstraint: this.firstConstraint});
+        console.log({secondDimension: this.secondDimension});
+        console.log({secondConstraint: this.secondConstraint});
+        console.log({firstGridSize: this.firstGridSize});
+        console.log({secondGridSize: this.secondGridSize});
+    },
+
     init(parsingMode) {
 
         this.parsingMode = parsingMode;
-        
-        this.firstDimension = 0;
-        this.firstConstraint = parsingMode === ParsingMode.horizontal ? width : height;
-        this.firstGridSize = parsingMode === ParsingMode.horizontal ? options.gridX : options.gridY;
-        
-        this.secondDimension = 0;
-        this.secondConstraint = parsingMode === ParsingMode.horizontal ? height : width;
-        this.secondGridSize = parsingMode === ParsingMode.horizontal ? options.gridY : options.gridX;
+    
+        const widthData = [0, width, options.gridX];
+        const heightData = [0, height, options.gridY];
+        const horizontalValues = [ ...widthData, ...heightData ];
+        const verticalValues = [ ...heightData, ...widthData ];
 
-        // console.log({firstDimension: this.firstDimension});
-        // console.log({firstConstraint: this.firstConstraint});
-        // console.log({secondDimension: this.secondDimension});
-        // console.log({secondConstraint: this.secondConstraint});
-        // console.log({firstGridSize: this.firstGridSize});
-        // console.log({secondGridSize: this.secondGridSize});
+        [ 
+            this.firstDimension, this.firstConstraint, this.firstGridSize, 
+            this.secondDimension, this.secondConstraint, this.secondGridSize 
+        ] = parsingMode === ParsingMode.horizontal ? horizontalValues : verticalValues;
+
     },
 
     run(callback, doesRedraw = false) {
@@ -39,6 +44,7 @@ const imageParser = {
             
             printTime(startedTime, millis());
         }
+        
         if (this.firstDimension >= this.firstConstraint  + this.firstGridSize) {
             this.firstDimension = 0;
             this.secondDimension += this.secondGridSize;

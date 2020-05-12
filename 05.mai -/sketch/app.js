@@ -24,7 +24,7 @@ let app = {
             imgSource : data.img    
         });
         pixelizr.setup();
-        imageParser.init(ParsingMode.horizontal);
+        imageParser.init(options.parsingMode);
         startedTime = millis();
     },
 

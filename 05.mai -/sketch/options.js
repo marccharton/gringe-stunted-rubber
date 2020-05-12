@@ -2,8 +2,10 @@ const options = {
 
     multiplier: 5,
     
+    parsingMode: ParsingMode.vertical,
+
     gridX: 30,
-    gridY: 100,
+    gridY: 20,
 
     darkBackground: false, 
 

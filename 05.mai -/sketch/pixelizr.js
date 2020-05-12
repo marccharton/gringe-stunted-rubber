@@ -51,7 +51,6 @@ const pixelizr = {
         return this.drawPixel(x, y);
     },
 
-    
     getCurrentColor(x, y) {
         let imgX = map(x, 0, width, 0, this.imgSource.width);
         let imgY = map(y, 0, height, 0, this.imgSource.height);
@@ -81,19 +80,34 @@ const pixelizr = {
     },
 
     drawSymbol(x, y, pixelConfig) {
-        switch(pixelConfig.pixelShape) {
-            case PixelShape.circle:
-                return this.drawPixelCircle(x, y);
-            case PixelShape.rectangle:
-                return this.drawPixelRectangle(x, y);
-            case PixelShape.losange:
-                return this.drawPixelLosange(x, y);
-        }
+        const shapes = {};
+
+        shapes[PixelShape.circle] = () => {
+            const circleSize = map(this.currentPixel.greyscale, 0, 255, this.gridX, 5);
+            circle(x, y, circleSize);
+            return this.createGrid(circleSize, circleSize);
+        };
+        shapes[PixelShape.rectangle] = () => {
+            const width = map(this.currentPixel.greyscale, 0, 255, this.gridX, 0);
+            const height = map(this.currentPixel.greyscale, 0, 255, this.gridY, 0);
+            rect(x, y, width, height);
+            return this.createGrid(width, this.gridY);
+        };
+        shapes[PixelShape.losange] = () => {
+            push();
+            rotate(PI/3);
+            const space = this.drawPixelRectangle(x, y);
+            pop();
+            return space;
+        };
+
+        return shapes[pixelConfig.pixelShape]();
     },
 
     drawPixel(x, y) {
         let maxSpace = {width: 0, height: 0};
         let pixelConfigList = [...this.pixelConfigList];
+
         while (pixelConfigList.length >= 1) {
             let pixelConfig = pixelConfigList.shift();
             this.fillWithColor(pixelConfig);
@@ -101,26 +115,6 @@ const pixelizr = {
             maxSpace = this.createGrid(max(maxSpace.width, space.width), max(maxSpace.height, space.height));
         }
         return maxSpace;
-    },
-
-    drawPixelCircle(x, y) {
-        const circleSize = map(this.currentPixel.greyscale, 0, 255, this.gridX, 5);
-        circle(x, y, circleSize);
-        return this.createGrid(circleSize, circleSize);
-    },
-
-    drawPixelRectangle(x, y) {
-        const width = map(this.currentPixel.greyscale, 0, 255, this.gridX, 0);
-        rect(x, y, width, this.gridY);
-        return this.createGrid(width, this.gridY);
-    },
-
-    drawPixelLosange(x, y) {
-        push();
-        rotate(PI/3);
-        const space = this.drawPixelRectangle(x, y);
-        pop();
-        return space;
     },
 
     createGrid(width, height) {
