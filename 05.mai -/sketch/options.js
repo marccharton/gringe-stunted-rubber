@@ -4,15 +4,25 @@ const options = {
     
     parsingMode: ParsingMode.vertical,
 
-    gridX: 30,
+    gridX: 90,
     gridY: 20,
 
     darkBackground: false, 
 
+    colorPalette: [
+        '#2A4858',
+        '#fafa6e',
+    ],
+
     pixelConfig: [
         {
-            mode: Mode.color,
-            pixelShape: PixelShape.rectangle,
+            mode: Mode.palette,
+            pixelShape: PixelShape.ellipse,
+            staticGrid: {
+                x: false,
+                y: true,
+            },
+            paletteBorders: [],
         },
         // {
         //     mode: Mode.whiteAndBlack,

@@ -21,8 +21,8 @@ let app = {
         
         pixelizr.init({
             ...options,
-            imgSource : data.img    
         });
+        pixelizr.setSourceImage(data.img);
         pixelizr.setup();
         imageParser.init(options.parsingMode);
         startedTime = millis();

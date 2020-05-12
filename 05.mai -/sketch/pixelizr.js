@@ -5,6 +5,7 @@ const Mode = {
     greyscale: 3,
     random: 4,
     contrastedRandom: 5,
+    palette: 6,
 };
 
 const PixelShape = {
@@ -15,23 +16,28 @@ const PixelShape = {
 
 const pixelizr = {
     options: {},
-    currentPixel : {},
-    imgSource : {},
+    currentPixel: {},
+    imgSource: {},
     pixelConfigList: [],
     gridX: {},
     gridY: {},
 
     init(options) {
-      this.options = options;
-      if (options.imgSource === undefined) {
-          throw "imgSource must be declared";
-      }
-      this.imgSource = options.imgSource;
+        this.options = options;
+        if (options.imgSource !== undefined) {
+            this.setSourceImage(options.imgSource);
+        }
 
-      this.gridX = options.gridX || 10;
-      this.gridY = options.gridY || 10;
+        this.gridX = options.gridX || 10;
+        this.gridY = options.gridY || 10;
 
-      this.pixelConfigList = options.pixelConfig;
+        this.pixelConfigList = options.pixelConfig || [{ mode: Mode.greyscale, pixelShape: PixelShape.rectangle }];
+
+        this.colorPalette = chroma.scale(options.colorPalette).mode('lch').colors(6);
+    },
+
+    setSourceImage(sourceImage) {
+        this.sourceImage = sourceImage;
     },
 
     setup() {
@@ -52,9 +58,9 @@ const pixelizr = {
     },
 
     getCurrentColor(x, y) {
-        let imgX = map(x, 0, width, 0, this.imgSource.width);
-        let imgY = map(y, 0, height, 0, this.imgSource.height);
-        this.currentPixel.color = color(this.imgSource.get(imgX, imgY));
+        let imgX = map(x, 0, width, 0, this.sourceImage.width);
+        let imgY = map(y, 0, height, 0, this.sourceImage.height);
+        this.currentPixel.color = color(this.sourceImage.get(imgX, imgY));
         this.currentPixel.greyscale = round(red(this.currentPixel.color) * 0.222 + green(this.currentPixel.color) * 0.707 + blue(this.currentPixel.color) * 0.071);
         return this.currentPixel.color;
     },
@@ -62,11 +68,11 @@ const pixelizr = {
     fillWithColor(pixelConfig) {
         const modes = {};
 
-        modes[Mode.color] = () =>  fill(this.currentPixel.color);
+        modes[Mode.color] = () => fill(this.currentPixel.color);
         modes[Mode.blackAndWhite] = () => fill(0);
         modes[Mode.whiteAndBlack] = () => fill(255);
         modes[Mode.greyscale] = () => fill(this.currentPixel.greyscale);
-        modes[Mode.random] = () => fill(random(0,255),random(0,255),random(0,255));
+        modes[Mode.random] = () => fill(random(0, 255), random(0, 255), random(0, 255));
         modes[Mode.contrastedRandom] = () => {
             let [r, g, b] = [
                 255 - random(0, 255 - this.currentPixel.greyscale * 1),
@@ -75,27 +81,41 @@ const pixelizr = {
             ];
             fill(r, g, b);
         };
-      
+        modes[Mode.palette] = () => {
+            const index = Math.floor(map(this.currentPixel.greyscale, 0, 255, 0, this.colorPalette.length));
+            console.log({ index, color: this.colorPalette[index] });
+            fill(this.colorPalette[index]);
+        };
+
         return modes[pixelConfig.mode]();
     },
 
     drawSymbol(x, y, pixelConfig) {
         const shapes = {};
 
+        shapes[PixelShape.ellipse] = () => {
+            const circleSizeX = map(this.currentPixel.greyscale, 0, 255, this.gridX, 5);
+            const circleSizeY = map(this.currentPixel.greyscale, 0, 255, this.gridY, 5);
+            ellipse(x, y, circleSizeX, circleSizeY);
+            return this.createGrid(circleSizeX, circleSizeY);
+        };
         shapes[PixelShape.circle] = () => {
-            const circleSize = map(this.currentPixel.greyscale, 0, 255, this.gridX, 5);
-            circle(x, y, circleSize);
-            return this.createGrid(circleSize, circleSize);
+            const circleSizeX = map(this.currentPixel.greyscale, 0, 255, this.gridX, 5);
+            const circleSizeY = map(this.currentPixel.greyscale, 0, 255, this.gridY, 5);
+            circle(x, y, circleSizeX);
+            return this.createGrid(circleSizeX, circleSizeX);
         };
         shapes[PixelShape.rectangle] = () => {
             const width = map(this.currentPixel.greyscale, 0, 255, this.gridX, 0);
             const height = map(this.currentPixel.greyscale, 0, 255, this.gridY, 0);
-            rect(x, y, width, height);
+            const staticGrid = pixelConfig.staticGrid ?? { x: false, y: false };
+
+            rect(x, y, staticGrid.x ? this.gridX : width, staticGrid.y ? this.gridY : height);
             return this.createGrid(width, this.gridY);
         };
         shapes[PixelShape.losange] = () => {
             push();
-            rotate(PI/3);
+            rotate(PI / 3);
             const space = this.drawPixelRectangle(x, y);
             pop();
             return space;
@@ -105,7 +125,7 @@ const pixelizr = {
     },
 
     drawPixel(x, y) {
-        let maxSpace = {width: 0, height: 0};
+        let maxSpace = { width: 0, height: 0 };
         let pixelConfigList = [...this.pixelConfigList];
 
         while (pixelConfigList.length >= 1) {
