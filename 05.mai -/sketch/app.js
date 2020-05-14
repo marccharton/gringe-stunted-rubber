@@ -19,11 +19,7 @@ let app = {
             .parent("container");
         // print(data.img.width + ' • ' + data.img.height);
         
-        pixelizr.init({
-            ...options,
-        });
-        pixelizr.setSourceImage(data.img);
-        pixelizr.setup();
+        pixelizr.init(options).setSourceImage(data.img).setup();
         imageParser.init(options.parsingMode);
         startedTime = millis();
     },

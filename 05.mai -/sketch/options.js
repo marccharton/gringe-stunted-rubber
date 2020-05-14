@@ -2,26 +2,28 @@ const options = {
 
     multiplier: 5,
     
-    parsingMode: ParsingMode.vertical,
+    parsingMode: ParsingMode.horizontal,
 
-    gridX: 90,
-    gridY: 20,
+    gridX: 20,
+    gridY: 10,
 
-    darkBackground: false, 
+    darkBackground: true, 
 
     colorPalette: [
-        '#2A4858',
-        '#fafa6e',
+        '#f0f',
+        '#FFFF00',
     ],
+    colorDefinition : 100,
 
     pixelConfig: [
         {
             mode: Mode.palette,
-            pixelShape: PixelShape.ellipse,
+            pixelShape: PixelShape.circle,
             staticGrid: {
                 x: false,
-                y: true,
+                y: false,
             },
+            negativeMode: true,
             paletteBorders: [],
         },
         // {

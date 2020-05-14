@@ -33,11 +33,14 @@ const pixelizr = {
 
         this.pixelConfigList = options.pixelConfig || [{ mode: Mode.greyscale, pixelShape: PixelShape.rectangle }];
 
-        this.colorPalette = chroma.scale(options.colorPalette).mode('lch').colors(6);
+        this.colorPalette = chroma.scale(options.colorPalette).mode('lch').colors(options.colorDefinition);
+        console.log(this.colorPalette);
+        return this;
     },
 
     setSourceImage(sourceImage) {
         this.sourceImage = sourceImage;
+        return this;
     },
 
     setup() {
@@ -82,8 +85,7 @@ const pixelizr = {
             fill(r, g, b);
         };
         modes[Mode.palette] = () => {
-            const index = Math.floor(map(this.currentPixel.greyscale, 0, 255, 0, this.colorPalette.length));
-            console.log({ index, color: this.colorPalette[index] });
+            const index = Math.floor(map(this.currentPixel.greyscale, 0, 255, 0, this.colorPalette.length - 1));
             fill(this.colorPalette[index]);
         };
 
@@ -106,12 +108,19 @@ const pixelizr = {
             return this.createGrid(circleSizeX, circleSizeX);
         };
         shapes[PixelShape.rectangle] = () => {
-            const width = map(this.currentPixel.greyscale, 0, 255, this.gridX, 0);
-            const height = map(this.currentPixel.greyscale, 0, 255, this.gridY, 0);
+            let minWidthLimit = pixelConfig.negativeMode ? 3 : this.gridX;
+            let maxWidthLimit = pixelConfig.negativeMode ? this.gridX : 3;
+            
+            let minHeightLimit = pixelConfig.negativeMode ? 3 : this.gridY;
+            let maxHeightLimit = pixelConfig.negativeMode ? this.gridY : 3;
+
+            const width = map(this.currentPixel.greyscale, 0, 255, minWidthLimit, maxWidthLimit);
+            const height = map(this.currentPixel.greyscale, 0, 255, minHeightLimit, maxHeightLimit);
+
             const staticGrid = pixelConfig.staticGrid ?? { x: false, y: false };
 
             rect(x, y, staticGrid.x ? this.gridX : width, staticGrid.y ? this.gridY : height);
-            return this.createGrid(width, this.gridY);
+            return this.createGrid(width, this.gridY); // TODO : return used values
         };
         shapes[PixelShape.losange] = () => {
             push();
