@@ -1,3 +1,5 @@
+/// <reference path="../node_modules/@types/p5/global.d.ts" />
+
 const Mode = {
     color: 0,
     blackAndWhite: 1,
@@ -12,6 +14,14 @@ const PixelShape = {
     circle: 0,
     rectangle: 1,
     losange: 2,
+};
+
+const TiltMode = {
+    translate: {
+        regular: 0,
+        further: 1,
+        crazy: 2,
+    },
 };
 
 const pixelizr = {
@@ -99,28 +109,35 @@ const pixelizr = {
             const circleSizeX = map(this.currentPixel.greyscale, 0, 255, this.gridX, 5);
             const circleSizeY = map(this.currentPixel.greyscale, 0, 255, this.gridY, 5);
             ellipse(x, y, circleSizeX, circleSizeY);
-            return this.createGrid(circleSizeX, circleSizeY);
+            return this.createGrid([circleSizeX, circleSizeY]);
         };
         shapes[PixelShape.circle] = () => {
             const circleSizeX = map(this.currentPixel.greyscale, 0, 255, this.gridX, 5);
             const circleSizeY = map(this.currentPixel.greyscale, 0, 255, this.gridY, 5);
             circle(x, y, circleSizeX);
-            return this.createGrid(circleSizeX, circleSizeX);
+            return this.createGrid([circleSizeX, circleSizeX]);
         };
         shapes[PixelShape.rectangle] = () => {
-            let minWidthLimit = pixelConfig.negativeMode ? 3 : this.gridX;
-            let maxWidthLimit = pixelConfig.negativeMode ? this.gridX : 3;
-            
-            let minHeightLimit = pixelConfig.negativeMode ? 3 : this.gridY;
-            let maxHeightLimit = pixelConfig.negativeMode ? this.gridY : 3;
+            const staticGrid = pixelConfig.staticGrid || { x: false, y: false };
+            let width, height;
 
-            const width = map(this.currentPixel.greyscale, 0, 255, minWidthLimit, maxWidthLimit);
-            const height = map(this.currentPixel.greyscale, 0, 255, minHeightLimit, maxHeightLimit);
+            if (staticGrid.x) {
+                width = this.gridX;
+            }else {
+                let [minWidthLimit, maxWidthLimit] = pixelConfig.negativeMode ? [3, this.gridX] : [this.gridX, 3];
+                width = staticGrid.x ? this.gridX : map(this.currentPixel.greyscale, 0, 255, minWidthLimit, maxWidthLimit);
+            }
 
-            const staticGrid = pixelConfig.staticGrid ?? { x: false, y: false };
+            if (staticGrid.y) {
+                height = this.gridY;
+            }else {
+                let [minHeightLimit, maxHeightLimit] = pixelConfig.negativeMode ? [3, this.gridY] : [this.gridY, 3];
+                height = staticGrid.y ? this.gridY : map(this.currentPixel.greyscale, 0, 255, minHeightLimit, maxHeightLimit);
+            }
 
-            rect(x, y, staticGrid.x ? this.gridX : width, staticGrid.y ? this.gridY : height);
-            return this.createGrid(width, this.gridY); // TODO : return used values
+            rect(x, y, width, height);
+
+            return this.createGrid([... this.tilt(width, height, pixelConfig)]);
         };
         shapes[PixelShape.losange] = () => {
             push();
@@ -129,8 +146,30 @@ const pixelizr = {
             pop();
             return space;
         };
-
+        
         return shapes[pixelConfig.pixelShape]();
+    },
+    
+    tilt(width, height, pixelConfig) {
+        const gs = this.currentPixel.greyscale;
+        let offsetX, offsetY;
+        const tiltDepth = pixelConfig.tilt.depth || 1;
+
+        switch(pixelConfig.tilt.mode) {
+            case TiltMode.translate.regular:
+                offsetX = map(gs, 0, 255, 0, this.gridX * tiltDepth/4);
+                offsetY = map(gs, 0, 255, 0, this.gridY * tiltDepth/4);
+                break;
+            case TiltMode.translate.further:
+                offsetX = map(gs, 0, 255, -(this.gridX/2), this.gridX);
+                offsetY = map(gs, 0, 255, -(this.gridY/2), this.gridY);
+                break;
+            case TiltMode.translate.crazy:
+                offsetX = random(-(this.gridX/2), this.gridX);
+                offsetY = random(-(this.gridY/2), this.gridY);                
+                break;
+        }
+        return [width + offsetX, height + offsetY];
     },
 
     drawPixel(x, y) {
@@ -141,12 +180,12 @@ const pixelizr = {
             let pixelConfig = pixelConfigList.shift();
             this.fillWithColor(pixelConfig);
             let space = this.drawSymbol(x, y, pixelConfig);
-            maxSpace = this.createGrid(max(maxSpace.width, space.width), max(maxSpace.height, space.height));
+            maxSpace = this.createGrid([max(maxSpace.width, space.width), max(maxSpace.height, space.height)]);
         }
         return maxSpace;
     },
 
-    createGrid(width, height) {
+    createGrid([width, height]) {
         return { width, height };
     }
 

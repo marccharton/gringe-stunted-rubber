@@ -4,8 +4,8 @@ const options = {
     
     parsingMode: ParsingMode.horizontal,
 
-    gridX: 20,
-    gridY: 10,
+    gridX: 30,
+    gridY: 20,
 
     darkBackground: true, 
 
@@ -17,19 +17,19 @@ const options = {
 
     pixelConfig: [
         {
-            mode: Mode.palette,
-            pixelShape: PixelShape.circle,
+            mode: Mode.whiteAndBlack,
+            pixelShape: PixelShape.rectangle,
             staticGrid: {
-                x: false,
+                x: true,
                 y: false,
             },
-            negativeMode: true,
+            tilt: {
+                mode: TiltMode.translate.further,
+                depth: 20,
+            },
+            negativeMode: false,
             paletteBorders: [],
         },
-        // {
-        //     mode: Mode.whiteAndBlack,
-        //     pixelShape: PixelShape.circle,
-        // },
     ],
     
 };
