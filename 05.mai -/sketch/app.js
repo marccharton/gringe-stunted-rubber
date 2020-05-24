@@ -19,6 +19,7 @@ let app = {
             .parent("container");
         // print(data.img.width + ' • ' + data.img.height);
         
+        renderer.init(param.imageName);
         pixelizr.init(options).setSourceImage(data.img).setup();
         imageParser.init(options.parsingMode);
         startedTime = millis();
@@ -32,28 +33,10 @@ let app = {
     },
 
     keyReleased() {
-
-        mapKeyToFunc("s", () => {
-            const currentCount = incerementCounterLocally(param.imageName);
-            const fileName = `${param.imageName}_${currentCount}`;
-            saveCanvas(fileName, 'png');
-        });
-        
-        mapKeyToFunc("r", () => {
-            const key = `${param.imageName}RendersCount`;
-            localStorage.removeItem(key);
-        });
+        mapKeyToFunc("s", () => renderer.save() );
+        mapKeyToFunc("r", () => renderer.remove() );
     }
 };
-
-function incerementCounterLocally(imageName) {
-    const key = `${imageName}RendersCount`;
-    const previousCount = localStorage.getItem(key);
-    let currentCount = previousCount === null ? 0 : int(previousCount) + 1;
-    
-    localStorage.setItem(key, currentCount);
-    return currentCount;
-}
 
 function mapKeyToFunc(keyCode, func) {
     if (key === keyCode || key === keyCode.toLowerCase() ||  key === keyCode.toUpperCase()) {
