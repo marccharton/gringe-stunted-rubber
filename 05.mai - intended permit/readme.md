@@ -1,4 +1,4 @@
-# 1. Find A Name
+# 1. Intended Permit
 
 ## 1.1. context
 
