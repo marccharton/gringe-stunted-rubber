@@ -59,8 +59,16 @@ const imageParser = {
 
     stop() {
         noLoop();
-        print(data.img.pixels);
-        print(pixels);
+        
+        // param.graphics.background(150, 170, 255);
+        // param.graphics.rect()
+        // param.graphics.updatePixels();
+        
+        //image(param.graphics, 0, 0);
+        save(param.graphics, "graphics.jpg");
+        save("canvas.jpg");
+        print("data.img.pixels :", data.img.pixels);
+        print("pixels :", pixels);
     }
 
 };

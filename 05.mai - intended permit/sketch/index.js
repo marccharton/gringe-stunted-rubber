@@ -2,6 +2,7 @@
 
 let data = {
     img: {},
+    graphics: {},
 };
 let param = {
     imagePath: "../assets/img/sources/",
@@ -16,7 +17,10 @@ function preload() {
 
 function setup() {
     createCanvas(data.img.width * options.multiplier, data.img.height * options.multiplier)
-        .parent("container");
+    .parent("container");
+    param.graphics = createGraphics(data.img.width * options.multiplier, data.img.height * options.multiplier);
+    // param.graphics.loadPixels();
+
     print(data.img.width + ' • ' + data.img.height);
     renderer.init(param.imageName);
     pixelizr.init(options).setSourceImage(data.img).setup();

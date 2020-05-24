@@ -59,13 +59,18 @@ const pixelizr = {
 
     setup() {
         ellipseMode(CENTER);
+        param.graphics.ellipseMode(CENTER);
         rectMode(CENTER);
+        param.graphics.rectMode(CENTER);
         noStroke();
+        param.graphics.noStroke();
 
         if (this.options.darkBackground) {
             background(0);
+            param.graphics.background(0);
         } else {
             background(255);
+            param.graphics.background(255);
         }
     },
 
@@ -123,10 +128,12 @@ const pixelizr = {
                 255 - random(0, 255 - this.currentPixel.greyscale * 1)
             ];
             fill(r, g, b);
+            param.graphics.fill(r, g, b);
         };
         modes[Mode.palette] = () => {
             const index = Math.floor(map(this.currentPixel.greyscale, 0, 255, 0, this.colorPalette.length - 1));
             fill(this.colorPalette[index]);
+            param.graphics.fill(this.colorPalette[index]);
         };
 
         return modes[pixelConfig.mode]();
@@ -139,12 +146,14 @@ const pixelizr = {
             const circleSizeX = Math.floor(map(this.currentPixel.greyscale, 0, 255, this.gridX, 5));
             const circleSizeY = Math.floor(map(this.currentPixel.greyscale, 0, 255, this.gridY, 5));
             ellipse(x, y, circleSizeX, circleSizeY);
+            param.graphics.ellipse(x, y, circleSizeX, circleSizeY);
             return this.createGrid([circleSizeX, circleSizeY]);
         };
         shapes[PixelShape.circle] = () => {
             const circleSizeX = Math.floor(map(this.currentPixel.greyscale, 0, 255, this.gridX, 5));
             const circleSizeY = Math.floor(map(this.currentPixel.greyscale, 0, 255, this.gridY, 5));
             circle(x, y, circleSizeX);
+            param.graphics.circle(x, y, circleSizeX);
             return this.createGrid([circleSizeX, circleSizeX]);
         };
         shapes[PixelShape.rectangle] = () => {
@@ -166,6 +175,7 @@ const pixelizr = {
             }
 
             rect(x, y, width, height);
+            param.graphics.rect(x, y, width, height);
 
             return this.createGrid([... this.tilt(width, height, pixelConfig)]);
         };
