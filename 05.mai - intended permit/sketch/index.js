@@ -1,4 +1,5 @@
 /// <reference path="../node_modules/@types/p5/global.d.ts" />
+
 let data = {
     img: {},
 };
@@ -14,11 +15,9 @@ function preload() {
 }
 
 function setup() {
-    createCanvas(data.img.width * options.multiplier,
-                    data.img.height * options.multiplier)
+    createCanvas(data.img.width * options.multiplier, data.img.height * options.multiplier)
         .parent("container");
-    // print(data.img.width + ' • ' + data.img.height);
-    print(data.img.pixels);
+    print(data.img.width + ' • ' + data.img.height);
     renderer.init(param.imageName);
     pixelizr.init(options).setSourceImage(data.img).setup();
     imageParser.init(options.parsingMode);

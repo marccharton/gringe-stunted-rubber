@@ -43,8 +43,11 @@ const pixelizr = {
         
         this.pixelConfigList = options.pixelConfig || [{ mode: Mode.greyscale, pixelShape: PixelShape.rectangle }];
         
-        this.colorPalette = chroma.scale(options.colorPalette).mode('lch').colors(options.colorDefinition);
-        console.log(this.colorPalette);
+        if (options.pixelConfig.filter((pc) => pc.mode === Mode.palette).length > 0) {
+            this.colorPalette = chroma.scale(options.colorPalette).mode('lch').colors(options.colorDefinition);
+            console.log(this.colorPalette);
+        }
+        
         return this;
     },
     
