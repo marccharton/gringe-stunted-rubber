@@ -31,7 +31,7 @@ const imageParser = {
 
     },
 
-    run(callback, doesRedraw = false) {
+    run(doesRedraw = false) {
         
         if (this.secondDimension >= this.secondConstraint + this.secondGridSize) {
             if (doesRedraw) {
@@ -39,7 +39,7 @@ const imageParser = {
                 this.firstDimension = 0;
             }
             else {
-                noLoop();
+                this.stop();
             }
             
             printTime(startedTime, millis());
@@ -50,11 +50,25 @@ const imageParser = {
             this.secondDimension += this.secondGridSize;
         }
 
-        const effectiveSpace = this.parsingMode === ParsingMode.horizontal 
-                                ? callback(this.firstDimension, this.secondDimension) 
-                                : callback(this.secondDimension, this.firstDimension);
+        const actualSpace = this.parsingMode === ParsingMode.horizontal 
+                                ? pixelizr.draw(this.firstDimension, this.secondDimension)
+                                : pixelizr.draw(this.secondDimension, this.firstDimension);
         
-        this.firstDimension += this.parsingMode === ParsingMode.horizontal ? effectiveSpace.width : effectiveSpace.height;
+        this.firstDimension += this.parsingMode === ParsingMode.horizontal ? actualSpace.width : actualSpace.height;
+    },
+
+    stop() {
+        noLoop();
+        
+        // param.graphics.background(150, 170, 255);
+        // param.graphics.rect()
+        // param.graphics.updatePixels();
+        
+        //image(param.graphics, 0, 0);
+        save(param.graphics, "graphics.jpg");
+        save("canvas.jpg");
+        print("data.img.pixels :", data.img.pixels);
+        print("pixels :", pixels);
     }
 
 };

@@ -1,10 +1,10 @@
-# Find A Name
+# 1. Intended Permit
 
-## context
+## 1.1. context
 
 améliorer la génération d'image à base de symboles.  
 
-## exports
+## 1.2. exports
 
 mosaic : https://mosaically.com/photomosaic/fbb7c87d-8580-40c8-9682-76322aeb764b
 

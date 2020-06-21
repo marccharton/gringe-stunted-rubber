@@ -1,0 +1,6 @@
+image:
+  file: .gitpod.Dockerfile
+
+tasks:
+  - init: cd "05.main - intended permit" && npm install
+    command: cd "05.mai - intended permit" && npm start

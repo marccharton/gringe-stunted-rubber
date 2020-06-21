@@ -1,6 +1,6 @@
 {
-  "name": "p5project",
-  "version": "1.0.0-alpha.1",
+  "name": "intended-permit",
+  "version": "1.0.0",
   "main": "sketch.js",
   "scripts": {
     "start": "lr-http-server -p 4000 -w */*.js,*.css,*.html"

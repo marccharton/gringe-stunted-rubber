@@ -1,6 +1,6 @@
 const options = {
 
-    multiplier: 5,
+    multiplier: 7,
     
     parsingMode: ParsingMode.horizontal,
 
@@ -25,7 +25,7 @@ const options = {
             },
             tilt: {
                 mode: TiltMode.translate.further,
-                depth: 20,
+                depth: 100,
             },
             negativeMode: false,
             paletteBorders: [],

@@ -37,31 +37,40 @@ const pixelizr = {
         if (options.imgSource !== undefined) {
             this.setSourceImage(options.imgSource);
         }
-
+        
         this.gridX = options.gridX || 10;
         this.gridY = options.gridY || 10;
-
+        
         this.pixelConfigList = options.pixelConfig || [{ mode: Mode.greyscale, pixelShape: PixelShape.rectangle }];
-
-        this.colorPalette = chroma.scale(options.colorPalette).mode('lch').colors(options.colorDefinition);
-        console.log(this.colorPalette);
+        
+        if (options.pixelConfig.filter((pc) => pc.mode === Mode.palette).length > 0) {
+            this.colorPalette = chroma.scale(options.colorPalette).mode('lch').colors(options.colorDefinition);
+            console.log(this.colorPalette);
+        }
+        
         return this;
     },
-
+    
     setSourceImage(sourceImage) {
         this.sourceImage = sourceImage;
+        this.sourceImage.loadPixels();
         return this;
     },
 
     setup() {
         ellipseMode(CENTER);
+        param.graphics.ellipseMode(CENTER);
         rectMode(CENTER);
+        param.graphics.rectMode(CENTER);
         noStroke();
+        param.graphics.noStroke();
 
         if (this.options.darkBackground) {
             background(0);
+            param.graphics.background(0);
         } else {
             background(255);
+            param.graphics.background(255);
         }
     },
 
@@ -70,10 +79,36 @@ const pixelizr = {
         return this.drawPixel(x, y);
     },
 
+    getPixel(x, y) {
+        return this.sourceImage.get(x, y);
+    },
+
+    getPixelRaw(x, y) {
+        const d = 1; // set these to the coordinates
+        let off = (y * width + x) * d * 4;
+        print("x :", x);
+        print("y :", y);
+        print("off :", off);
+        let components = [
+            this.sourceImage[off + 0],
+            this.sourceImage[off + 1],
+            this.sourceImage[off + 2],
+            this.sourceImage[off + 3]
+        ];
+        return components;
+    },
+
     getCurrentColor(x, y) {
-        let imgX = map(x, 0, width, 0, this.sourceImage.width);
-        let imgY = map(y, 0, height, 0, this.sourceImage.height);
-        this.currentPixel.color = color(this.sourceImage.get(imgX, imgY));
+        this.sourceImage.loadPixels();
+        let imgX = Math.floor(map(x, 0, width, 0, this.sourceImage.width));
+        let imgY = Math.floor(map(y, 0, height, 0, this.sourceImage.height));
+
+        const pixel = this.getPixel(imgX, imgY);
+        // const pixelRaw = this.getPixelRaw(imgX, imgY);
+        // print("with get:", pixel);
+        // print("with pixels[]:", pixelRaw);
+
+        this.currentPixel.color = color(pixel);
         this.currentPixel.greyscale = round(red(this.currentPixel.color) * 0.222 + green(this.currentPixel.color) * 0.707 + blue(this.currentPixel.color) * 0.071);
         return this.currentPixel.color;
     },
@@ -93,10 +128,12 @@ const pixelizr = {
                 255 - random(0, 255 - this.currentPixel.greyscale * 1)
             ];
             fill(r, g, b);
+            param.graphics.fill(r, g, b);
         };
         modes[Mode.palette] = () => {
             const index = Math.floor(map(this.currentPixel.greyscale, 0, 255, 0, this.colorPalette.length - 1));
             fill(this.colorPalette[index]);
+            param.graphics.fill(this.colorPalette[index]);
         };
 
         return modes[pixelConfig.mode]();
@@ -106,15 +143,17 @@ const pixelizr = {
         const shapes = {};
 
         shapes[PixelShape.ellipse] = () => {
-            const circleSizeX = map(this.currentPixel.greyscale, 0, 255, this.gridX, 5);
-            const circleSizeY = map(this.currentPixel.greyscale, 0, 255, this.gridY, 5);
+            const circleSizeX = Math.floor(map(this.currentPixel.greyscale, 0, 255, this.gridX, 5));
+            const circleSizeY = Math.floor(map(this.currentPixel.greyscale, 0, 255, this.gridY, 5));
             ellipse(x, y, circleSizeX, circleSizeY);
+            param.graphics.ellipse(x, y, circleSizeX, circleSizeY);
             return this.createGrid([circleSizeX, circleSizeY]);
         };
         shapes[PixelShape.circle] = () => {
-            const circleSizeX = map(this.currentPixel.greyscale, 0, 255, this.gridX, 5);
-            const circleSizeY = map(this.currentPixel.greyscale, 0, 255, this.gridY, 5);
+            const circleSizeX = Math.floor(map(this.currentPixel.greyscale, 0, 255, this.gridX, 5));
+            const circleSizeY = Math.floor(map(this.currentPixel.greyscale, 0, 255, this.gridY, 5));
             circle(x, y, circleSizeX);
+            param.graphics.circle(x, y, circleSizeX);
             return this.createGrid([circleSizeX, circleSizeX]);
         };
         shapes[PixelShape.rectangle] = () => {
@@ -125,17 +164,18 @@ const pixelizr = {
                 width = this.gridX;
             }else {
                 let [minWidthLimit, maxWidthLimit] = pixelConfig.negativeMode ? [3, this.gridX] : [this.gridX, 3];
-                width = staticGrid.x ? this.gridX : map(this.currentPixel.greyscale, 0, 255, minWidthLimit, maxWidthLimit);
+                width = staticGrid.x ? this.gridX : Math.floor(map(this.currentPixel.greyscale, 0, 255, minWidthLimit, maxWidthLimit));
             }
 
             if (staticGrid.y) {
                 height = this.gridY;
             }else {
                 let [minHeightLimit, maxHeightLimit] = pixelConfig.negativeMode ? [3, this.gridY] : [this.gridY, 3];
-                height = staticGrid.y ? this.gridY : map(this.currentPixel.greyscale, 0, 255, minHeightLimit, maxHeightLimit);
+                height = staticGrid.y ? this.gridY : Math.floor(map(this.currentPixel.greyscale, 0, 255, minHeightLimit, maxHeightLimit));
             }
 
             rect(x, y, width, height);
+            param.graphics.rect(x, y, width, height);
 
             return this.createGrid([... this.tilt(width, height, pixelConfig)]);
         };
@@ -157,12 +197,12 @@ const pixelizr = {
 
         switch(pixelConfig.tilt.mode) {
             case TiltMode.translate.regular:
-                offsetX = map(gs, 0, 255, 0, this.gridX * tiltDepth/4);
-                offsetY = map(gs, 0, 255, 0, this.gridY * tiltDepth/4);
+                offsetX = Math.floor(map(gs, 0, 255, 0, this.gridX * tiltDepth/4));
+                offsetY = Math.floor(map(gs, 0, 255, 0, this.gridY * tiltDepth/4));
                 break;
             case TiltMode.translate.further:
-                offsetX = map(gs, 0, 255, -(this.gridX/2), this.gridX);
-                offsetY = map(gs, 0, 255, -(this.gridY/2), this.gridY);
+                offsetX = Math.floor(map(gs, 0, 255, -(this.gridX/2), this.gridX));
+                offsetY = Math.floor(map(gs, 0, 255, -(this.gridY/2), this.gridY));
                 break;
             case TiltMode.translate.crazy:
                 offsetX = random(-(this.gridX/2), this.gridX);
@@ -186,7 +226,10 @@ const pixelizr = {
     },
 
     createGrid([width, height]) {
-        return { width, height };
+        return { 
+            width, 
+            height 
+        };
     }
 
 };
