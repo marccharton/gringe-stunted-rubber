@@ -14,6 +14,7 @@ const PixelShape = {
     circle: 0,
     rectangle: 1,
     losange: 2,
+    text: 3,
 };
 
 const TiltMode = {
@@ -74,9 +75,9 @@ const pixelizr = {
         }
     },
 
-    draw(x, y) {
+    draw(x, y, counter) {
         this.getCurrentColor(x, y);
-        return this.drawPixel(x, y);
+        return this.drawPixel(x, y, counter);
     },
 
     getPixel(x, y) {
@@ -142,7 +143,7 @@ const pixelizr = {
         return modes[pixelConfig.mode]();
     },
 
-    drawSymbol(x, y, pixelConfig) {
+    drawSymbol(x, y, pixelConfig, counter) {
         const shapes = {};
 
         shapes[PixelShape.ellipse] = () => {
@@ -192,9 +193,21 @@ const pixelizr = {
             pop();
             return space;
         };
-        // shapes[PixelShape.text] = () => {
-        //   // get current letter, draw letter
-        // };
+        shapes[PixelShape.text] = () => {
+            textFont('Times');
+            let fontSize = Math.floor(map(this.currentPixel.greyscale, 0, 255, pixelConfig.fontSize + 5, pixelConfig.fontSize - 5));
+            textSize(fontSize);
+            textAlign(LEFT, CENTER);
+            textStyle(BOLD);
+            let letter = pixelConfig.text.charAt(counter);
+            text(letter, x, y + 15);
+            let letterWidth = textWidth(letter) + pixelConfig.kerning;
+            console.log({letterWidth});
+            // let letterHeight = textHeight(letter) + pixelConfig.kerning;
+
+            return this.createGrid([letterWidth, letterWidth]);
+            // get current letter, draw letter
+        };
         
         return shapes[pixelConfig.pixelShape]();
     },
@@ -221,14 +234,14 @@ const pixelizr = {
         return [width + offsetX, height + offsetY];
     },
 
-    drawPixel(x, y) {
+    drawPixel(x, y, counter) {
         let maxSpace = { width: 0, height: 0 };
         let pixelConfigList = [...this.pixelConfigList];
 
         while (pixelConfigList.length >= 1) {
             let pixelConfig = pixelConfigList.shift();
             this.fillWithColor(pixelConfig);
-            let space = this.drawSymbol(x, y, pixelConfig);
+            let space = this.drawSymbol(x, y, pixelConfig, counter);
             maxSpace = this.createGrid([max(maxSpace.width, space.width), max(maxSpace.height, space.height)]);
         }
         return maxSpace;

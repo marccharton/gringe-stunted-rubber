@@ -5,6 +5,8 @@ const ParsingMode = {
 };
 
 const imageParser = {
+    counter : 0,
+    actualSpace: {},
     
     log() {
         console.log({firstDimension: this.firstDimension});
@@ -48,11 +50,16 @@ const imageParser = {
         if (this.firstDimension >= this.firstConstraint  + this.firstGridSize) {
             this.firstDimension = 0;
             this.secondDimension += this.secondGridSize;
+            // this.secondDimension += actualSpace.height;
         }
 
-        const actualSpace = this.parsingMode === ParsingMode.horizontal 
-                                ? pixelizr.draw(this.firstDimension, this.secondDimension)
-                                : pixelizr.draw(this.secondDimension, this.firstDimension);
+        if (this.counter === 1472) {
+            this.counter = 0;
+        }
+
+        actualSpace = this.parsingMode === ParsingMode.horizontal 
+                        ? pixelizr.draw(this.firstDimension, this.secondDimension, this.counter++)
+                        : pixelizr.draw(this.secondDimension, this.firstDimension, this.counter++);
         
         this.firstDimension += this.parsingMode === ParsingMode.horizontal ? actualSpace.width : actualSpace.height;
     },
