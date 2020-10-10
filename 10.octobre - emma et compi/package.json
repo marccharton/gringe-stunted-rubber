@@ -1,0 +1,15 @@
+{
+  "name": "intended-permit",
+  "version": "1.0.0",
+  "main": "sketch.js",
+  "scripts": {
+    "start": "lr-http-server -w */*.js,*.css,*.html"
+  },
+  "devDependencies": {
+    "@types/p5": "^0.9.0",
+    "lr-http-server": "^0.1.5"
+  },
+  "dependencies": {
+    "p5": "^1.0.0"
+  }
+}
