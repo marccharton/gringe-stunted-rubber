@@ -16,9 +16,9 @@ function preload() {
 }
 
 function setup() {
-    createCanvas(data.img.width * options.multiplier, data.img.height * options.multiplier)
-    .parent("container");
-    param.graphics = createGraphics(data.img.width * options.multiplier, data.img.height * options.multiplier);
+    let [graphicsWidth, graphicsHeight] = [data.img.width * options.multiplier, data.img.height * options.multiplier];
+    createCanvas(graphicsWidth, graphicsHeight).parent("container");
+    param.graphics = createGraphics(graphicsWidth, graphicsHeight);
     // param.graphics.loadPixels();
 
     print(data.img.width + ' • ' + data.img.height);
