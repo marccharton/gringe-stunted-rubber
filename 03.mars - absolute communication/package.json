@@ -7,7 +7,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "browser-sync": "^2.26.7",
+    "browser-sync": "^2.27.10",
     "nodemon": "^2.0.2",
     "p5": "^0.10.2"
   }
